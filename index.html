@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aghaZ Hub | Tools & Apps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Firebase SDK (compat version - easy for pure HTML) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --surface-hover: #24242e;
+      --border: #2e2e3a;
+      --text: #f0f0f5;
+      --text-muted: #9a9aaa;
+      --accent: #7c5cff;
+      --accent-soft: rgba(124, 92, 255, 0.15);
+      --green: #34d399;
+      --blue: #60a5fa;
+      --orange: #fbbf24;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --red: #f87171;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Outfit", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124, 92, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 92, 255, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #7c5cff, #22d3ee);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 0 24px rgba(124, 92, 255, 0.4);
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, #fff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-top: 0.4rem;
+    }
+
+    /* User bar (shown when logged in) */
+    .user-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1.2rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .user-bar.visible { display: flex; }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.95rem;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* Auth Card */
+    .auth-card {
+      display: none;
+      max-width: 420px;
+      margin: 0 auto 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.75rem;
+    }
+
+    .auth-card.visible { display: block; }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: var(--bg);
+      padding: 0.35rem;
+      border-radius: 10px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 0.5rem;
+    }
+
+    .btn-primary:hover {
+      background: #6b4ce6;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-message {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .auth-message.error {
+      display: block;
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--red);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .auth-message.success {
+      display: block;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    /* Tools */
+    .tools-section {
+      display: none;
+    }
+
+    .tools-section.visible {
+      display: block;
+    }
+
+    .tools {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .tools {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .tool-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem 1.35rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .tool-card::after {
+      content: "↗";
+      position: absolute;
+      top: 1rem;
+      right: 1.1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .tool-card:hover::after {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    .icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+    }
+
+    .icon.attendance { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+    .icon.rooms     { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
+    .icon.appraisal { background: rgba(251, 191, 36, 0.15); color: var(--orange); }
+    .icon.result    { background: rgba(244, 114, 182, 0.15); color: var(--pink); }
+    .icon.adjust    { background: rgba(124, 92, 255, 0.15); color: var(--accent); }
+    .icon.seat      { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
+    .icon.duty      { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+
+    .tool-info h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+      padding-right: 1.5rem;
+    }
+
+    .tool-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .visitor-count {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .visitor-count span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">aZ</div>
+      </div>
+      <h1>aghaZ Hub</h1>
+      <p class="tagline">Smart tools for campus life — attendance, rooms, exams & more</p>
+    </header>
+
+    <!-- User bar (logged in) -->
+    <div class="user-bar" id="userBar">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div>
+          <div id="userEmail" style="font-weight:500;"></div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">Logged in</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- Auth Card (login / register) -->
+    <div class="auth-card visible" id="authCard">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin">Login</button>
+        <button class="auth-tab" id="tabRegister">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••" minlength="6" />
+        </div>
+        <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display:none;">
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" required placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Password (min 6 characters)</label>
+          <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6" />
+        </div>
+        <div class="form-group">
+          <label for="registerPassword2">Confirm Password</label>
+          <input type="password" id="registerPassword2" required placeholder="••••••••" minlength="6" />
+        </div>
+        <button type="submit" class="btn-primary" id="registerBtn">Create Account</button>
+      </form>
+
+      <div class="auth-message" id="authMessage"></div>
+    </div>
+
+    <!-- Tools Section (shown after login) -->
+    <div class="tools-section" id="toolsSection">
+      <div class="tools">
+        <a class="tool-card" href="https://aghaz-hub-attendance-monitoring-app-app-xpn5ea.streamlit.app/" target="_blank" rel="noopener">
+          <div class="icon attendance">📋</div>
+          <div class="tool-info">
+            <h2>Attendance Monitoring</h2>
+            <p>Track & manage student attendance in real time</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaz-hub.github.io/MRU-Free-Rooms/" target="_blank" rel="noopener">
+          <div class="icon rooms">🏫</div>
+          <div class="tool-info">
+            <h2>Free Classrooms Finder</h2>
+            <p>Find free rooms with Projector or Smart TV</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaimranhusain.github.io/Faculty-Appraisal/" target="_blank" rel="noopener">
+          <div class="icon appraisal">⭐</div>
+          <div class="tool-info">
+            <h2>Faculty Appraisal</h2>
+            <p>Calculate faculty appraisal points easily</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaimranhusain.github.io/CSTI_Exam_Result/student_result_checker_updated.html" target="_blank" rel="noopener">
+          <div class="icon result">📊</div>
+          <div class="tool-info">
+            <h2>Exam Result Checker</h2>
+            <p>Quick student result lookup (CSTI)</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaz-hub.github.io/faculty-adjustment-finder/faculty-adjustment-finder-updated/faculty-adjustment-finder/app/" target="_blank" rel="noopener">
+          <div class="icon adjust">🔄</div>
+          <div class="tool-info">
+            <h2>Faculty Adjustment Finder</h2>
+            <p>Teaching hours, preferences & color-coded suggestions</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaimranhusain.github.io/Exam/seating_finder_22sep%20(3).html" target="_blank" rel="noopener">
+          <div class="icon seat">🪑</div>
+          <div class="tool-info">
+            <h2>Exam Seat Finder</h2>
+            <p>Find your exam seating arrangement instantly</p>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://aghaz-hub.github.io/Exam-Duty-Adjustment/index%20(2).html" target="_blank" rel="noopener">
+          <div class="icon duty">📝</div>
+          <div class="tool-info">
+            <h2>Exam Duty Adjustment</h2>
+            <p>Manage & adjust exam invigilation duties</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <div class="visitor-count">
+        Total Visitors: <span id="finicount_views">...</span>
+      </div>
+      Built with ❤️ by <strong>aghaZ</strong> · 
+      <a href="https://github.com/aghaz-hub" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+  </div>
+
+  <!-- Finicounter (free visitor counter - no signup needed) -->
+  <script async src="https://finicounter.eu.org/finicounter.js"></script>
+
+  <script>
+    // ============================================================
+    // 1. PASTE YOUR FIREBASE CONFIG HERE
+    // ============================================================
+    // Go to Firebase Console → Project Settings → Your apps → Web app
+    // Copy the firebaseConfig object and paste it below.
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-ZoSWnGNa2KDxuammStTPp3BnSu55Jw4",
+      authDomain: "aghaz-hub.firebaseapp.com",
+      projectId: "aghaz-hub",
+      storageBucket: "aghaz-hub.firebasestorage.app",
+      messagingSenderId: "853816155889",
+      appId: "1:853816155889:web:cc74854d6ca70a0df75350"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ============================================================
+    // DOM Elements
+    // ============================================================
+    const authCard = document.getElementById("authCard");
+    const toolsSection = document.getElementById("toolsSection");
+    const userBar = document.getElementById("userBar");
+    const userEmail = document.getElementById("userEmail");
+    const userAvatar = document.getElementById("userAvatar");
+    const authMessage = document.getElementById("authMessage");
+
+    const tabLogin = document.getElementById("tabLogin");
+    const tabRegister = document.getElementById("tabRegister");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    // ============================================================
+    // Auth State Listener
+    // ============================================================
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Logged in
+        authCard.classList.remove("visible");
+        toolsSection.classList.add("visible");
+        userBar.classList.add("visible");
+        userEmail.textContent = user.email;
+        userAvatar.textContent = user.email.charAt(0).toUpperCase();
+      } else {
+        // Logged out
+        authCard.classList.add("visible");
+        toolsSection.classList.remove("visible");
+        userBar.classList.remove("visible");
+      }
+    });
+
+    // ============================================================
+    // Tab switching
+    // ============================================================
+    tabLogin.addEventListener("click", () => {
+      tabLogin.classList.add("active");
+      tabRegister.classList.remove("active");
+      loginForm.style.display = "block";
+      registerForm.style.display = "none";
+      clearMessage();
+    });
+
+    tabRegister.addEventListener("click", () => {
+      tabRegister.classList.add("active");
+      tabLogin.classList.remove("active");
+      registerForm.style.display = "block";
+      loginForm.style.display = "none";
+      clearMessage();
+    });
+
+    // ============================================================
+    // Login
+    // ============================================================
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const btn = document.getElementById("loginBtn");
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Logging in...';
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        // onAuthStateChanged will handle UI
+      } catch (error) {
+        showMessage(getErrorMessage(error), "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Login";
+      }
+    });
+
+    // ============================================================
+    // Register
+    // ============================================================
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      const password2 = document.getElementById("registerPassword2").value;
+      const btn = document.getElementById("registerBtn");
+
+      if (password !== password2) {
+        showMessage("Passwords do not match.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        showMessage("Account created successfully! You are now logged in.", "success");
+      } catch (error) {
+        showMessage(getErrorMessage(error), "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Create Account";
+      }
+    });
+
+    // ============================================================
+    // Logout
+    // ============================================================
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut();
+    });
+
+    // ============================================================
+    // Helpers
+    // ============================================================
+    function showMessage(text, type) {
+      authMessage.textContent = text;
+      authMessage.className = "auth-message " + type;
+    }
+
+    function clearMessage() {
+      authMessage.className = "auth-message";
+      authMessage.textContent = "";
+    }
+
+    function getErrorMessage(error) {
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          return "This email is already registered. Please login.";
+        case "auth/invalid-email":
+          return "Please enter a valid email address.";
+        case "auth/weak-password":
+          return "Password should be at least 6 characters.";
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          return "Incorrect email or password.";
+        case "auth/too-many-requests":
+          return "Too many attempts. Please try again later.";
+        default:
+          return error.message || "Something went wrong. Please try again.";
+      }
+    }
+  </script>
+</body>
+</html>
