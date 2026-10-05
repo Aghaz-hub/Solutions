@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="aghaZ — The Beginning. Turning Academic Challenges into Smart Digital Solutions.">
+<title>aghaZ — The Beginning | Smart Academic Solutions</title>
+<style>
+:root{
+  --bg:#07111f; --bg2:#0b1830; --card:rgba(16,31,54,.72);
+  --text:#f5f8ff; --muted:#a9b8ce; --line:rgba(255,255,255,.10);
+  --accent:#63e6be; --accent2:#74c0fc; --shadow:0 20px 60px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text); background:
+  radial-gradient(circle at 15% 10%,rgba(116,192,252,.16),transparent 30%),
+  radial-gradient(circle at 85% 15%,rgba(99,230,190,.12),transparent 28%),
+  linear-gradient(145deg,var(--bg),var(--bg2)); min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1160px,92%);margin:auto}
+nav{height:78px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.45rem;font-weight:800;letter-spacing:-.04em}
+.logo span{color:var(--accent)}
+.navlinks{display:flex;gap:25px;color:var(--muted);font-size:.92rem}
+.navlinks a:hover{color:#fff}
+.hero{padding:105px 0 95px;text-align:center;position:relative}
+.badge{
+ display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--line);
+ border-radius:999px;background:rgba(255,255,255,.045);color:var(--muted);font-size:.84rem;
+ backdrop-filter:blur(10px);margin-bottom:25px
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 16px var(--accent)}
+h1{font-size:clamp(3rem,8vw,6.4rem);line-height:.95;letter-spacing:-.065em}
+h1 .brand{background:linear-gradient(100deg,#fff,var(--accent2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:clamp(1.15rem,2.4vw,1.65rem);color:#d8e2f1;margin:25px auto 16px;font-weight:600}
+.lead{max-width:720px;margin:auto;color:var(--muted);line-height:1.75;font-size:1.03rem}
+.buttons{display:flex;justify-content:center;gap:12px;margin-top:32px;flex-wrap:wrap}
+.btn{padding:13px 21px;border-radius:12px;border:1px solid var(--line);font-weight:700;font-size:.94rem;transition:.25s}
+.btn.primary{background:#fff;color:#07111f}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.section{padding:75px 0}
+.section-head{text-align:center;margin-bottom:40px}
+.kicker{text-transform:uppercase;letter-spacing:.16em;color:var(--accent);font-size:.76rem;font-weight:800}
+h2{font-size:clamp(2rem,4vw,3rem);letter-spacing:-.045em;margin:9px 0}
+.section-head p{color:var(--muted);max-width:650px;margin:auto;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+ background:var(--card);border:1px solid var(--line);border-radius:22px;padding:25px;
+ backdrop-filter:blur(16px);box-shadow:var(--shadow);transition:.3s;position:relative;overflow:hidden
+}
+.card:before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg,rgba(116,192,252,.10),transparent 45%,rgba(99,230,190,.08));pointer-events:none}
+.card:hover{transform:translateY(-7px);border-color:rgba(255,255,255,.20)}
+.icon{font-size:2rem;margin-bottom:18px}
+.card h3{font-size:1.15rem;margin-bottom:9px}
+.card p{color:var(--muted);line-height:1.65;font-size:.92rem;min-height:70px}
+.card a{display:inline-block;margin-top:20px;color:var(--accent);font-weight:800;font-size:.9rem}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{padding:34px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.035)}
+.panel p{color:var(--muted);line-height:1.8}
+.steps{display:grid;gap:14px;margin-top:20px}
+.step{display:flex;gap:15px;align-items:flex-start}
+.num{min-width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(99,230,190,.1);color:var(--accent);font-weight:800}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.88rem}
+.footer-inner{display:flex;justify-content:space-between;gap:20px;align-items:center}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.about{grid-template-columns:1fr}}
+@media(max-width:580px){.navlinks{display:none}.hero{padding:75px 0}.grid{grid-template-columns:1fr}.card p{min-height:auto}.footer-inner{flex-direction:column;text-align:center}.footer-inner > div:last-child{text-align:center !important}}
+</style>
+</head>
+<body>
+
+<header class="container">
+<nav>
+  <a href="#" class="logo">agha<span>Z</span></a>
+  <div class="navlinks">
+    <a href="#solutions">Solutions</a>
+    <a href="#idea">The Idea</a>
+  </div>
+</nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <div class="badge"><span class="dot"></span> A growing digital solutions ecosystem</div>
+    <h1><span class="brand">aghaZ</span><br>— The Beginning</h1>
+    <p class="tagline">Turning Academic Challenges into Smart Digital Solutions</p>
+    <p class="lead">
+      A collection of practical tools built around real-world academic needs —
+      making attendance, classrooms, faculty management and examinations simpler,
+      faster and more accessible.
+    </p>
+    <div class="buttons">
+      <a class="btn primary" href="#solutions">Explore Solutions ↓</a>
+      <a class="btn" href="#idea">Discover the Idea</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="solutions">
+<div class="container">
+  <div class="section-head">
+    <div class="kicker">The aghaZ Digital Solutions</div>
+    <h2>Built to simplify everyday work.</h2>
+    <p>Each project starts with a practical challenge and turns it into a focused digital experience.</p>
+  </div>
+
+  <div class="grid">
+    <article class="card"><div class="icon">📊</div><h3>Attendance Monitoring</h3><p>Monitor and manage attendance through a streamlined digital interface.</p><a href="https://aghaz-hub-attendance-monitoring-app-app-xpn5ea.streamlit.app/" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">🏫</div><h3>Free Classroom Finder</h3><p>Find available classrooms with Projectors or Smart TVs for effective teaching.</p><a href="https://aghaz-hub.github.io/MRU-Free-Rooms/" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">👨‍🏫</div><h3>Faculty Appraisal</h3><p>Calculate and track faculty appraisal points with a simple digital workflow.</p><a href="https://aghaimranhusain.github.io/Faculty-Appraisal/" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">📝</div><h3>Exam Result Checker</h3><p>Quickly check and access student examination results.</p><a href="https://aghaimranhusain.github.io/CSTI_Exam_Result/student_result_checker_updated.html" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">⏰</div><h3>Faculty Adjustment Finder</h3><p>Find suitable faculty adjustments using teaching-hour information and preference-based colour indicators.</p><a href="https://aghaz-hub.github.io/faculty-adjustment-finder/faculty-adjustment-finder-updated/faculty-adjustment-finder/app/" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">🎫</div><h3>Exam Seat Finder</h3><p>Help students quickly locate their examination seats with an easy-to-use finder.</p><a href="https://aghaimranhusain.github.io/Exam/seating_finder_22sep%20(3).html" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">👮</div><h3>Exam Duty Adjustment</h3><p>Simplify the process of managing and adjusting examination duties.</p><a href="https://aghaz-hub.github.io/Exam-Duty-Adjustment/index%20(2).html" target="_blank">Open Tool ↗</a></article>
+    <article class="card"><div class="icon">💡</div><h3>More to Come</h3><p>A growing collection — new solutions can be added as new academic challenges emerge.</p><a href="#idea">See the Philosophy ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section class="section" id="idea">
+<div class="container">
+  <div class="section-head">
+    <div class="kicker">The idea behind aghaZ</div>
+    <h2>Observe. Identify. Build. Simplify.</h2>
+  </div>
+  <div class="about">
+    <div class="panel">
+      <p>
+        <strong style="color:#fff">aghaZ — The Beginning</strong> represents the starting point of a growing
+        collection of solutions created to address recurring academic and administrative tasks.
+        The goal is straightforward: turn useful ideas into tools that people can actually use.
+      </p>
+    </div>
+    <div class="panel">
+      <div class="steps">
+        <div class="step"><div class="num">01</div><div><strong>Observe</strong><p>Notice the everyday challenge.</p></div></div>
+        <div class="step"><div class="num">02</div><div><strong>Identify</strong><p>Find the workflow that can be improved.</p></div></div>
+        <div class="step"><div class="num">03</div><div><strong>Build</strong><p>Create a focused digital solution.</p></div></div>
+        <div class="step"><div class="num">04</div><div><strong>Simplify</strong><p>Make the task easier for everyone.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container footer-inner">
+  <div><strong style="color:#fff">aghaZ — The Beginning</strong><br>Turning Academic Challenges into Smart Digital Solutions.</div>
+  <div style="text-align:right">
+    <div style="margin-bottom:6px">© <span id="year"></span> aghaZ</div>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.82rem;color:var(--muted)">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)"></span>
+      <span><span id="visit-count">…</span> visits</span>
+    </div>
+  </div>
+</div>
+</footer>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Persistent visitor counter — increments on every page load
+  fetch("https://countapi.mileshilliard.com/api/v1/hit/aghaz-homepage-visits")
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById("visit-count");
+      if (el && data && data.value != null) {
+        el.textContent = Number(data.value).toLocaleString();
+      }
+    })
+    .catch(() => {
+      const el = document.getElementById("visit-count");
+      if (el) el.textContent = "—";
+    });
+</script>
+</body>
+</html>
