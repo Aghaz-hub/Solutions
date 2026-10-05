@@ -153,7 +153,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
   <div><strong style="color:#fff">aghaZ — The Beginning</strong><br>Turning Academic Challenges into Smart Digital Solutions.</div>
   <div style="text-align:right">
     <div style="margin-bottom:6px">© <span id="year"></span> aghaZ</div>
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.82rem;color:var(--muted)">
+    <div id="visit-badge" style="display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.82rem;color:var(--muted)">
       <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)"></span>
       <span><span id="visit-count">…</span> visits</span>
     </div>
@@ -163,19 +163,43 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // Persistent visitor counter — increments on every page load
-  fetch("https://countapi.mileshilliard.com/api/v1/hit/aghaz-homepage-visits")
-    .then(r => r.json())
-    .then(data => {
-      const el = document.getElementById("visit-count");
-      if (el && data && data.value != null) {
+  // Visitor counter with multiple fallbacks (works even if one API is blocked)
+  (async function () {
+    const el = document.getElementById("visit-count");
+    const badge = document.getElementById("visit-badge");
+    if (!el) return;
+
+    // 1) Try primary free API
+    try {
+      const r = await fetch("https://countapi.mileshilliard.com/api/v1/hit/aghaz-homepage-visits", { cache: "no-store" });
+      const data = await r.json();
+      if (data && data.value != null) {
         el.textContent = Number(data.value).toLocaleString();
+        return;
       }
-    })
-    .catch(() => {
-      const el = document.getElementById("visit-count");
-      if (el) el.textContent = "—";
-    });
+    } catch (e) { /* blocked or offline — try fallback */ }
+
+    // 2) Fallback: image-based counter (harder for ad-blockers to stop)
+    // This also increments the count every time the image loads
+    const img = new Image();
+    img.alt = "visits";
+    img.style.height = "20px";
+    img.style.verticalAlign = "middle";
+    img.style.borderRadius = "4px";
+    img.onload = function () {
+      // Replace text counter with the badge image
+      if (badge) {
+        badge.innerHTML = "";
+        badge.style.padding = "4px 8px";
+        badge.appendChild(img);
+      }
+    };
+    img.onerror = function () {
+      el.textContent = "—";
+    };
+    // hitscounter.dev — reliable replacement for the old hits.seeyoufarm
+    img.src = "https://hitscounter.dev/api/hit?url=https%3A%2F%2Faghaz-hub.github.io%2FSolutions%2F&label=Visits&icon=eye&color=%2363e6be";
+  })();
 </script>
 </body>
 </html>
